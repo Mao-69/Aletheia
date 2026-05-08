@@ -1,0 +1,13 @@
+# Library of Aletheia — runtime dependencies
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.7   # required by FastAPI for Form() handling
+slowapi>=0.1.9            # rate limiting
+qrcode>=7.4               # QR generation (pure Python, no zbar required)
+Pillow>=10.0              # used by qrcode + the bunny overlay
+numpy>=1.26               # vectorised module rendering for the QR
+gmpy2>=2.1                # GMP wrapper — required for big-integer math at this scale
+
+# dev / test
+pytest>=8.0
+httpx>=0.27               # used by FastAPI's TestClient
