@@ -80,53 +80,6 @@ full identifier and the server will record the room itself.
 
 ---
 
-## Architecture
-
-```
-aletheia_v2/
-├── app.py               FastAPI server (endpoints, middleware, lifespan)
-├── babel_lib.py         The math: bijection, content<->int, identifier parsing
-├── search_modes.py      Three filler styles for search input (empty/chars/words)
-├── bookmark_store.py    SHA-256 hash <-> long-room mapping (SQLite, WAL)
-├── qr_render.py         Vectorised QR rendering with the cyberpunk-bunny overlay
-├── numbers.bin          Cached C and I (regenerated on first run if missing)
-├── bookmarks.sqlite3    Local bookmark store (created on first run)
-├── static/
-│   ├── index.html       Single-page UI (no inline scripts; CSP-strict)
-│   ├── styles.css       Cyberpunk-terminal aesthetic
-│   ├── app.js           View switching, fetch wrappers, reader, QR scanner
-│   ├── wabbit.gif       Animated pixel-art bunny background (desktop)
-│   ├── bunny.png        Static fallback (mobile)
-│   └── cyberpunk_bunny.png  Overlaid on QR images
-├── test_aletheia.py     Pytest suite (47 tests covering math + HTTP)
-└── requirements.txt
-```
-
----
-
-## Endpoints
-
-All accept `multipart/form-data` POSTs (or `application/x-www-form-urlencoded`).
-
-| Method | Path      | Body                              | Returns |
-| ------ | --------- | --------------------------------- | ------- |
-| GET    | `/`       | —                                 | The SPA |
-| GET    | `/health` | —                                 | `{"status": "ok"}` |
-| POST   | `/search` | `content`, `mode`                 | `{identifier, compact_identifier, page, mode, sanitized, highlight}` |
-| POST   | `/encode` | `content`, `mode`                 | `…` + `qr_base64` (PNG bytes, base64) |
-| POST   | `/browse` | `identifier` (full **or** `@hash`)| `{content, room, room_short, wall, shelf, book, page, prev, next, prev_compact, next_compact, identifier, compact_identifier, highlight}` |
-| POST   | `/random` | —                                 | same shape as `/browse` |
-| POST   | `/qr`     | `identifier` (any string ≤ 1500c) | `{qr_base64, identifier}` |
-
-`mode` is one of `empty` (default), `chars`, `words`. See
-`search_modes.py` for what each does.
-
-`highlight`, when present, is `[start_line, start_col, end_line, end_col]`
-in **page-local coordinates** (0-indexed). The frontend draws a gold box
-over the matched span on the rendered page.
-
----
-
 ## Running it
 
 ### Local
@@ -139,50 +92,8 @@ python app.py
 
 First boot generates the `C` and `I` constants (~1.5 seconds, one-time).
 
-### Configuration
-
-Environment variables:
-
-| Variable          | Default       | Effect |
-| ----------------- | ------------- | ------ |
-| `HOST`            | `127.0.0.1`   | Bind address (use `0.0.0.0` to expose) |
-| `PORT`            | `8000`        | Bind port |
-| `RELOAD`          | `0`           | Set to `1` for uvicorn auto-reload |
-| `LOG_LEVEL`       | `INFO`        | uvicorn / app log level |
-| `RATE_LIMIT`      | `30/minute`   | Per-IP rate cap on every endpoint |
-| `ALLOWED_ORIGINS` | (off)         | Comma-separated CORS allowlist; off by default |
-
-### Tests
-
-```bash
-pip install pytest httpx
-python -m pytest test_aletheia.py -v
-```
-
-The suite runs in ~45s — the bulk is the bijection round-trips doing real
-~7M-bit modular arithmetic. There's no mocking; if the math breaks, the
-tests notice.
-
 ---
 
-## Security posture
-
-* No `innerHTML` anywhere — all server-derived strings hit the DOM via
-  `textContent`. Reader pages are 3,200 characters of arbitrary text from
-  the library; they are rendered as text, not HTML.
-* CSP forbids inline scripts and forbids any frame ancestor. `script-src`
-  permits `self` plus `unpkg.com` (where `html5-qrcode` is loaded).
-* `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`,
-  `Permissions-Policy: camera=(self), microphone=(), geolocation=()`.
-* CORS is **off by default**; set `ALLOWED_ORIGINS` to enable.
-* Per-IP rate limiting on every endpoint via `slowapi`.
-* Identifier validation: room must be base-32 only; wall/shelf/book/page
-  must be in their nominal ranges. Invalid inputs return 422.
-* Bookmark hashes are 16 hex characters (64 bits). Collisions are
-  *theoretically* possible at scale; in practice the working set will never
-  approach `2^32` rooms.
-
----
 
 ## Lineage
 
