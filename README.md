@@ -3,6 +3,8 @@
 > _Aletheia_ (ἀλήθεια) — Greek for "disclosure", "unconcealment". The page
 > is already there. The library only reveals its address.
 
+<img width="1383" height="697" alt="Screenshot From 2026-05-07 21-49-20" src="https://github.com/user-attachments/assets/92ce9d02-34fe-4ecd-9229-951b39d80ed8" />
+
 This is a Python port of Babel,
 extended with QR codes, an in-process bookmark store, and a 42-character
 alphabet (a–z, six punctuation marks, space, and digits 0–9).
