@@ -1,16 +1,11 @@
 # Library of Aletheia
 
-A faithful, complete implementation of Borges's Library of Babel as a
-deterministic bijection: every page in the library exists at exactly one
-address, and every address yields exactly one page. Content is never stored
-— it is *computed* from the address.
-
-This is a Python port of [Tom Snelling's babel](https://libraryofbabel.app),
-extended with QR codes, an in-process bookmark store, and a 42-character
-alphabet (a–z, six punctuation marks, space, and digits 0–9).
-
 > _Aletheia_ (ἀλήθεια) — Greek for "disclosure", "unconcealment". The page
 > is already there. The library only reveals its address.
+
+This is a Python port of Babel,
+extended with QR codes, an in-process bookmark store, and a 42-character
+alphabet (a–z, six punctuation marks, space, and digits 0–9).
 
 ---
 
