@@ -11,6 +11,12 @@ alphabet (a–z, six punctuation marks, space, and digits 0–9).
 
 ---
 
+
+<img width="1352" height="614" alt="Screenshot From 2026-05-07 23-17-18" src="https://github.com/user-attachments/assets/7553b81b-2afd-42c5-aa83-a5e619771f44" />
+
+<img width="1352" height="614" alt="Screenshot From 2026-05-07 23-18-21" src="https://github.com/user-attachments/assets/36a2d7fe-224e-4960-89b7-fb41ccbfe988" />
+
+
 ## How it works
 
 Every book in the library is 1,312,000 characters long (40 lines × 80 chars
