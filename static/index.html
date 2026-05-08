@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Library of Aletheia</title>
+  <link rel="icon" href="/static/favicon.ico" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <meta name="description" content="Every page that ever could be written, indexed by a deterministic bijection. No content is stored: every identifier yields one page; every page is at one identifier." />
+</head>
+<body>
+  <!-- Live region for status / errors -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <header class="masthead">
+    <h1 class="masthead-title">
+      <span class="masthead-mark">◐</span>
+      <span>Library of Aletheia</span>
+    <span class="masthead-mark">◑</span>
+    </h1>
+    <p class="masthead-sub">Every page already exists. Find the address.</p>
+  </header>
+
+  <main id="stage" class="stage">
+
+    <!-- ============================================================ MENU -->
+    <section id="view-menu" class="view view-menu" aria-label="Main menu">
+      <nav class="menu-grid">
+        <button class="menu-tile" data-action="goto-create">
+          <span class="menu-tile-glyph">✶</span>
+          <span class="menu-tile-label">Create Book</span>
+          <span class="menu-tile-desc">Encode text → identifier + QR</span>
+        </button>
+        <button class="menu-tile" data-action="goto-search">
+          <span class="menu-tile-glyph">⌖</span>
+          <span class="menu-tile-label">Search</span>
+          <span class="menu-tile-desc">Find an address that contains your text</span>
+        </button>
+        <button class="menu-tile" data-action="goto-browse">
+          <span class="menu-tile-glyph">⌬</span>
+          <span class="menu-tile-label">Browse</span>
+          <span class="menu-tile-desc">Read the page at an identifier</span>
+        </button>
+        <button class="menu-tile" data-action="do-random">
+          <span class="menu-tile-glyph">⌘</span>
+          <span class="menu-tile-label">Random</span>
+          <span class="menu-tile-desc">Visit a uniformly random page</span>
+        </button>
+      </nav>
+
+      <div class="menu-aux">
+        <button class="aux-btn" data-action="open-scanner" type="button">
+          <span class="aux-btn-glyph">▣</span> Scan QR
+        </button>
+      </div>
+
+      <p class="menu-blurb">
+        The library contains every possible book of 1,312,000 characters drawn from
+        the 42-character alphabet a-z, comma, period, exclamation, question mark,
+        hyphen, space, and digits 0-9. Each book lives at a unique address of the
+        form <code>room.wall.shelf.book.page</code>. Searching text doesn't generate
+        a new page — it computes which page already contains it.
+      </p>
+    </section>
+
+    <!-- ========================================================== CREATE -->
+    <section id="view-create" class="view" aria-label="Create a book" hidden>
+      <header class="view-header">
+        <button class="back-btn" data-action="goto-menu" aria-label="Back to menu">←</button>
+        <h2>Create Book</h2>
+      </header>
+      <form id="form-create" class="content-form" autocomplete="off">
+        <label class="field">
+          <span class="field-label">Text to enshrine</span>
+          <textarea name="content" rows="8" required maxlength="1312000"
+                    placeholder="Anything. The library will return its address and a QR code that proves where it lives."></textarea>
+        </label>
+        <fieldset class="modes">
+          <legend>Surrounding pages</legend>
+          <label class="mode"><input type="radio" name="mode" value="empty" checked />
+            <span class="mode-label">Empty</span>
+            <span class="mode-desc">Your text on one page; the rest of the book is blank.</span>
+          </label>
+          <label class="mode"><input type="radio" name="mode" value="chars" />
+            <span class="mode-label">Chars</span>
+            <span class="mode-desc">Your text embedded in random alphabet noise.</span>
+          </label>
+          <label class="mode"><input type="radio" name="mode" value="words" />
+            <span class="mode-label">Words</span>
+            <span class="mode-desc">Your text embedded in plausibly-readable English.</span>
+          </label>
+        </fieldset>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Inscribe ⇢</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- =========================================================== SEARCH -->
+    <section id="view-search" class="view" aria-label="Search for a page" hidden>
+      <header class="view-header">
+        <button class="back-btn" data-action="goto-menu" aria-label="Back to menu">←</button>
+        <h2>Search</h2>
+      </header>
+      <form id="form-search" class="content-form" autocomplete="off">
+        <label class="field">
+          <span class="field-label">Phrase to locate</span>
+          <textarea name="content" rows="8" required maxlength="1312000"
+                    placeholder="A phrase, a paragraph, a poem. The library knows where it is."></textarea>
+        </label>
+        <fieldset class="modes">
+          <legend>Surrounding pages</legend>
+          <label class="mode"><input type="radio" name="mode" value="empty" checked />
+            <span class="mode-label">Empty</span>
+            <span class="mode-desc">Your text on a page in an otherwise blank book.</span>
+          </label>
+          <label class="mode"><input type="radio" name="mode" value="chars" />
+            <span class="mode-label">Chars</span>
+            <span class="mode-desc">Embedded in random alphabet characters.</span>
+          </label>
+          <label class="mode"><input type="radio" name="mode" value="words" />
+            <span class="mode-label">Words</span>
+            <span class="mode-desc">Embedded in plausibly-readable English.</span>
+          </label>
+        </fieldset>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Locate ⇢</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- =========================================================== BROWSE -->
+    <section id="view-browse" class="view" aria-label="Browse to an identifier" hidden>
+      <header class="view-header">
+        <button class="back-btn" data-action="goto-menu" aria-label="Back to menu">←</button>
+        <h2>Browse</h2>
+      </header>
+      <form id="form-browse" class="content-form" autocomplete="off">
+        <label class="field">
+          <span class="field-label">Identifier</span>
+          <textarea name="identifier" rows="4" required
+                    placeholder="ROOM.WALL.SHELF.BOOK.PAGE   or   @hash.WALL.SHELF.BOOK.PAGE"></textarea>
+          <span class="field-hint">
+            Both forms accepted: full <code>room.wall.shelf.book.page</code> (room
+            may be very long) or compact <code>@hash.wall.shelf.book.page</code>
+            (only works for rooms this server has seen before).
+          </span>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Open ⇢</button>
+          <button type="button" class="secondary-btn" data-action="open-scanner">Scan QR</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ========================================================== RESULTS -->
+    <!-- After /encode: shows the QR + compact ID. From here the user can read it or save the QR. -->
+    <section id="view-results" class="view" aria-label="Encoding result" hidden>
+      <header class="view-header">
+        <button class="back-btn" data-action="goto-menu" aria-label="Back to menu">←</button>
+        <h2>Inscribed</h2>
+      </header>
+      <div class="results-grid">
+        <div class="results-qr-frame">
+          <img id="results-qr" alt="QR code containing the book's compact identifier" />
+          <div id="results-qr-warning" class="results-qr-warning" hidden>
+            Identifier too long for a QR code. Use the compact form below to share.
+          </div>
+        </div>
+        <div class="results-meta">
+          <dl class="results-dl">
+            <dt>Compact identifier</dt>
+            <dd>
+              <code id="results-compact" class="copyable">—</code>
+              <button class="micro-btn" data-action="copy-compact" type="button">copy</button>
+            </dd>
+            <dt>Full identifier</dt>
+            <dd>
+              <span id="results-full-meta" class="results-full-meta">—</span>
+              <button class="micro-btn" data-action="copy-full" type="button">copy</button>
+            </dd>
+            <dt>Page</dt>
+            <dd id="results-page">—</dd>
+          </dl>
+          <div class="results-actions">
+            <button class="primary-btn" data-action="open-from-results" type="button">Read this page ⇢</button>
+            <button class="secondary-btn" data-action="save-qr" type="button">Save QR</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================== READER -->
+    <section id="view-reader" class="view view-reader" aria-label="Page reader" hidden>
+      <header class="view-header reader-header">
+        <button class="back-btn" data-action="goto-menu" aria-label="Back to menu">←</button>
+        <div class="reader-title">
+          <span class="reader-title-room" id="reader-room">—</span>
+          <span class="reader-title-pos" id="reader-pos">w— · s— · b— · p—</span>
+        </div>
+        <div class="reader-actions">
+          <button class="micro-btn" data-action="copy-compact-from-reader" type="button">copy id</button>
+          <button class="micro-btn" data-action="qr-from-reader" type="button">QR</button>
+        </div>
+      </header>
+
+      <div id="reader-page-frame" class="reader-page-frame">
+        <pre id="reader-page" class="reader-page" aria-label="Page content"></pre>
+        <div id="reader-highlight" class="reader-highlight" hidden></div>
+      </div>
+
+      <nav class="reader-nav">
+        <button class="nav-btn" id="reader-prev" data-action="prev-page" type="button">
+          <span aria-hidden="true">◀</span> prev page
+        </button>
+        <span class="reader-pageno" id="reader-pageno">—</span>
+        <button class="nav-btn" id="reader-next" data-action="next-page" type="button">
+          next page <span aria-hidden="true">▶</span>
+        </button>
+      </nav>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ SCANNER -->
+  <dialog id="scanner-dialog" class="scanner-dialog" aria-label="QR scanner">
+    <div class="scanner-frame">
+      <div id="scanner-mount" class="scanner-mount"></div>
+      <div class="scanner-actions">
+        <button class="secondary-btn" data-action="close-scanner" type="button">Cancel</button>
+      </div>
+      <p class="scanner-hint" id="scanner-status">Point camera at a Library of Aletheia QR.</p>
+    </div>
+  </dialog>
+
+  <!-- =========================================================== QR-MODAL -->
+  <dialog id="qr-dialog" class="qr-dialog" aria-label="QR code">
+    <div class="qr-frame">
+      <img id="qr-dialog-img" alt="QR code for current identifier" />
+      <p class="qr-dialog-caption" id="qr-dialog-caption">—</p>
+      <div class="qr-dialog-actions">
+        <button class="secondary-btn" data-action="save-qr-from-dialog" type="button">Save</button>
+        <button class="secondary-btn" data-action="close-qr-dialog" type="button">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="footer">
+    <span>Library of Aletheia</span>
+  </footer>
+
+  <!-- html5-qrcode bundled locally (v2.3.8). Loading from /static/ avoids any CDN
+       reachability or CSP issues; the file is ~375 KB minified. The library exposes
+       window.Html5Qrcode and a few related globals after this loads. -->
+  <script src="/static/html5-qrcode.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
